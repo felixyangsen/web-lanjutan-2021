@@ -1,6 +1,5 @@
 var express = require('express');
 var logger = require('morgan');
-var bodyParser = require("body-parser");
 
 var app = express();
 app.use(logger('dev'));
@@ -15,7 +14,7 @@ app.get("/api/cari", function (req, res, next) {
     res.send(umur);
 });
 
-app.get("api/:nim/:nama", function (req, res) {
+app.get("/api/:nim/:nama", function (req, res) {
     res.statusCode = 200;
     res.setHeader("Content-Type", "text/plain");
     res.send(req.params);

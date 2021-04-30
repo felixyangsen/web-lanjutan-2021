@@ -1,29 +1,47 @@
 var express = require('express');
 var logger = require("morgan");
+var jwt = require('jsonwebtoken');
+
+const jwtKey = "belajar-middleware"
 
 var app = express();
 app.use(logger("dev"));
 
-const myMiddleware = (req, res, next) => {
-    if (req.params.nim === "123") {
-        console.log("Nim terverifikasi");
-        next();
-    } else {
-        const err = {
-            status: "error",
-            data: {
-                nim: req.params.nim,
-            },
-        };
-        next(err);
+const jwtMiddeware = (req, res, next) => {
+    const auth = req.headers.authorization;
+
+    if (!auth) {
+        return res.status(401).json({Message: "token not provided"})
     }
-};
 
-app.get("/api/:nim/:nama", myMiddleware, function (req, res) {
-    res.statusCode = 200;
+    const jwtToken = auth.split(" ")[1];
+    jwt.verify(jwtToken, jwtKey, function(err, decoded) {
+        if (err) {
+            return res.status(401).json({Message: "invalid token"})
+        }
 
-    res.setHeader("Content-Type", "text/plain");
-    res.send(req.params);
+        req.user = decoded
+        next();
+    });
+}
+
+app.get("/api/mahasiswa", jwtMiddeware, function (req, res) {
+    res.setHeader("Content-Type", "application/json");
+
+    res.status(200)
+    res.send({data: req.user});
+});
+
+app.get("/api/auth/:nim", function (req, res) {
+    res.setHeader("Content-Type", "application/json");
+
+    var id = req.params.id
+    var token = jwt.sign({ id: id }, jwtKey, {
+        expiresIn: 86400 
+    });
+
+    res.status(200)
+    res.send({ token: token });
 });
 
 app.use((error, req, res, next) => {
