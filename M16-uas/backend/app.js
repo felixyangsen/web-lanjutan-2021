@@ -124,9 +124,14 @@ app.post("/api/drug/add", auth, function (req, res) {
 
     connection.end();
 
+    response = {
+        name: req.body.name,
+        stock: req.body.stock,
+    }
+
     res.statusCode = 200;
     res.setHeader("Content-type", "application/json");
-    res.send('success');
+    res.send(response);
 })
 
 app.put("/api/drug/edit", auth, function (req, res) {
@@ -165,7 +170,7 @@ app.delete("/api/drug/delete/:id", auth, function (req, res) {
 
         res.statusCode = 200;
         res.setHeader("Content-type", "application/json");
-        res.send('success');
+        res.send('delete success');
     });
 
     connection.end();
