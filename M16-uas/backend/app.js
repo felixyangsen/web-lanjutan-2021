@@ -10,11 +10,11 @@ var app = express();
 app.use(bodyParser.json());
 
 var connection = mysql.createConnection({
-    host: 'db-a239fj.pmberjaya.com',
-    user: 'doadmin',
-    password: 'ft39sejhzpbehfbq',
-    database: 'xdrug',
-    port: '25060',
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    database: 'local',
+    port: '8080',
 });
 
 const auth = (req, res, next) => {
